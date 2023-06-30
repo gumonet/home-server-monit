@@ -1,0 +1,25 @@
+#docker run -d --restart=always -p 3001:3001 -v uptime-kuma:/app/data --name uptime-kuma louislam/uptime-kuma:1
+version: '3.8'
+services:
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    # if you are running as root then set it to 0
+    # else find the right id with the id -u command
+    user: '0'
+    ports:
+      - '3000:3000'
+    # adding the mount volume point which we create earlier
+    volumes:
+      - '$PWD/data:/var/lib/grafana'
+
+  uptime:
+    image: louislam/uptime-kuma
+    container_name: uptime_kuma
+    restart: unless-stopped
+
+    ports:
+      - '3001:3001'
+    volumes:
+      - '$PWD/uptime-kuma:/app/data'
